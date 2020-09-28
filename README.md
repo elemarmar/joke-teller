@@ -33,7 +33,7 @@ Simple application that tells random developer jokes to the user whenever the` "
 
 
 
-1. Call a joke API to get a random joke → 
+1. Call a joke API to get a random joke 
 2. Pass to a text to speech API that will read out loud the joke 
 3. Display joke on screen
 
