@@ -1,8 +1,11 @@
 # Joke Teller
 
-%PIC%
+![cover](cover.png)
 
-%Description%
+Simple application that tells random developer jokes to the user whenever the` "Tell Me A Joke"` button is clicked on. The joke is both displayed on screen in a speech bubble as well as played by a robotic voice. APIs used for this project:
+
+- [joke API](https://sv443.net/jokeapi/v2/)
+- [text-to-speech API](http://www.voicerss.org/api/)
 
 
 
@@ -16,6 +19,7 @@
 2. Using [text-to-speech API](http://www.voicerss.org/api/)
 3. Manipulate background of container element
 4. Hiding an API key 👉🏻 it should go in the Backend
+5. Using `ended` event
 
 
 
@@ -29,67 +33,80 @@
 
 
 
-Call a joke API to get a random joke -> pass to a text to speech aPI that will tell us the joke
+1. Call a joke API to get a random joke → 
+2. Pass to a text to speech API that will read out loud the joke 
+3. Display joke on screen
 
 
-
-### Text-To-Speech API
-
-
-
-### Joke API
-
-We are using....
-
-We want to create a function that gets the jokes from API
-
-```js
-// Get Jokes from Joke API
-async function getJokes() {
-  let joke = '';
-  const apiUrl = 'https://sv443.net/jokeapi/v2/joke/Programming'
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    // Check if the joke is a single or two parts joke
-    if (data.setup) {
-      joke = `${data.setup} ... ${data.delivery}`;
-    } else {
-      joke = `${data.joke}`;
-    }
-    tellMeAJoke(joke); // for next step: connects both APIs
-  } catch(error) {
-    console.log('Error: ' + error)
-  }
-}
-```
-
-Because we have both single jokes and jokes with a sept and delivery, we make sure in both cases the text is saved in the variable `joke` so that we can pass in to the other API.
 
 <br>
 
-### Conecting both APIs
+### Text-To-Speech API
 
-We create a `tellMe(joke)` function that accepts a parameter that will be the joke (string). This function will call the text-to-speech API with that text. 
+The `voice.js` file contains the `VoiceRSS` object that allows us to use the `speech` method that takes a string and returns an audio.
+
+**script.js**
 
 ```js
 // Passing Joke to VoiceRSS API
 function tellMeAJoke(joke) {
   VoiceRSS.speech({
     key: '...',
-    src: joke,
+    src: joke, // <-- our joke!
     hl: 'en-us',
+    v: 'Linda',
     r: 0,
     c: 'mp3',
     f: '44khz_16bit_stereo',
-    
-  })
+    ssml: false,
+  });
 }
 ```
 
 <br>
 
+### Joke API
 
+<br>
+
+We create a function that gets the jokes from the API:
+
+**script.js**
+
+```js
+// Get Jokes from Joke API
+async function getJokes() {
+  let joke = '';
+  const apiUrl = 'https://sv443.net/jokeapi/v2/joke/Programming'
+  
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    // Check if the joke is a single or two parts joke
+    if (data.setup) {
+      joke = `${data.setup} ... ${data.delivery}`;
+    } else {
+      joke = `${data.joke}`;
+    }
+    
+    // Display text
+    renderJoke(joke);
+
+    // Text-To-Speech API
+    tellMeAJoke(joke);
+
+    // Disable Button While Audio Playing
+    toggleButton();
+  } catch (error) {
+    console.log('Ooops, there was an error: ' + error);
+  }
+}
+```
+
+> ⚠️ Because we have both single jokes and jokes with a sept and delivery, we make sure in both cases the text is saved in the variable `joke` so that we can pass in to the other API.
+
+<br>
 
 ### Manipulating the DOM (button)
 
@@ -115,10 +132,3 @@ function toggleButton() {
 
 ---
 
-<br>
-
-## Checklist
-
-- [ ] Make the robot have two states: normal and telling a joke. When the user clicks on the button, the robot should change animation, when it's done, it should go back to the static version.
-- [ ] Create another button to ask for jokes in German. Play these audios with a different voice (text-to-speech API).
-- [ ] Add joke text as a speech bubble for the robot
