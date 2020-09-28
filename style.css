@@ -50,6 +50,33 @@ button:disabled {
   filter: brightness(30%);
 }
 
+/* speech bubble */
+.speech-bubble {
+  box-sizing: border-box;
+  top: 20px;
+  position: relative;
+  background: #f8fff883;
+  font-family: 'Courier New', 'Courier New', Courier, monospace;
+  padding: 20px;
+  border-radius: 0.4em;
+  max-width: 300px;
+}
+
+.speech-bubble:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 24px solid transparent;
+  border-right-color: #f8fff883;
+  border-left: 0;
+  border-top: 0;
+  margin-top: -12px;
+  margin-left: -24px;
+}
+
 /* Media Query: Tablet or Smaller */
 @media screen and (max-width: 1000px) {
   .container {
