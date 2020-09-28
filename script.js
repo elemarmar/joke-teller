@@ -1,9 +1,15 @@
 const button = document.getElementById('button');
 const audioElement = document.getElementById('audio');
+const bubble = document.getElementById('speech');
 
 // Enable/Disable Button
 function toggleButton() {
   button.disabled = !button.disabled;
+}
+
+// Render joke in speech bubble
+function renderJoke(joke) {
+  bubble.textContent = joke;
 }
 
 // Get Jokes from Joke API
@@ -21,6 +27,9 @@ async function getJokes() {
     } else {
       joke = `${data.joke}`;
     }
+
+    // Display text
+    renderJoke(joke);
 
     // Text-To-Speech API
     tellMeAJoke(joke);
